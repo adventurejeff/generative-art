@@ -1,7 +1,7 @@
 const canvasSketch = require('canvas-sketch');
 const { lerp } = require('canvas-sketch-util/math');
 const random = require('canvas-sketch-util/random');
-
+const palettes = require('nice-color-palettes');
 
 const settings = {
   dimensions: [ 2048, 2048 ], //or 'A4'/[x, y] 
@@ -12,7 +12,13 @@ const settings = {
 
 
 const sketch = () => {
-  
+
+  //Pick a random palette from the palettes module.
+  //slicing it up from the 5 to a smaller count of colours
+  const colourCount = 3;
+  const palette = random.pick(palettes).slice(0,colourCount);
+
+
   //Setting the seed for the random function from sketch utils, (rather than using JS Math.random)
   //but in this case it's a random number.
   random.setSeed(Math.random());
@@ -31,6 +37,7 @@ const sketch = () => {
         //add them to the array, scrap that. We'll create a set of variables
         //put the position in, and the radius value randomised.
         points.push({
+          colour: random.pick(palette),
           position: [u,v], 
           radius: random.value() * 10
 
@@ -55,14 +62,14 @@ const sketch = () => {
   var totalElements = 0;
 
   return ({ context, width, height }) => {
-    context.fillStyle = 'grey';
+    context.fillStyle = 'white';
     context.fillRect(0,0,width,height);
 
     points.forEach(data => {
 
       //Don't quite get this bit. (deconstructing)
       const { 
-        position, radius
+        position, radius, colour
       } = data;
       const [ u, v ] = position;
       //Using Lerp, put a margin on the element
@@ -74,7 +81,7 @@ const sketch = () => {
       //configure and draw the line
       context.beginPath();
       context.arc(x, y, radius * 5, Math.PI * 2, false);
-      context.fillStyle = 'black';
+      context.fillStyle = colour;
       context.lineWidth = 10;
       context.fill();
 
