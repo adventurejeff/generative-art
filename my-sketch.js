@@ -28,8 +28,13 @@ const sketch = () => {
         const u = x / (iterations - 1);
         const v = y / (iterations - 1);
 
-        //add them to the array
-        points.push([u,v]);
+        //add them to the array, scrap that. We'll create a set of variables
+        //put the position in, and the radius value randomised.
+        points.push({
+          position: [u,v], 
+          radius: random.value() * 10
+
+        });
       }
 
     }
@@ -40,7 +45,7 @@ const sketch = () => {
   
   // Call the function that returns an array and store it in points
 
-  const points = createGrid().filter(() => random.value() > 0.5);
+  const points = createGrid().filter(() => random.value() > 0.2);
   //Using the filter we can drop some out
   //console.log(() => Math.random() > 0.5);
   //This outputs a null or a false??
@@ -50,24 +55,28 @@ const sketch = () => {
   var totalElements = 0;
 
   return ({ context, width, height }) => {
-    context.fillStyle = 'brown';
+    context.fillStyle = 'grey';
     context.fillRect(0,0,width,height);
 
-    points.forEach(([u,v]) => {
+    points.forEach(data => {
 
+      //Don't quite get this bit. (deconstructing)
+      const { 
+        position, radius
+      } = data;
+      const [ u, v ] = position;
       //Using Lerp, put a margin on the element
       //Lerp gives us a higher for earlier one
       //and 
       const x = lerp(margin, width-margin, u)
-      console.log(u + " " + lerp(margin, width-margin, u).toString())
       const y = lerp(margin, height - margin, v);
 
       //configure and draw the line
       context.beginPath();
-      context.arc(x, y, 10, Math.PI * 2, false);
-      context.strokeStyle = 'black';
-      context.lineWidth = 5;
-      context.stroke();
+      context.arc(x, y, radius * 5, Math.PI * 2, false);
+      context.fillStyle = 'black';
+      context.lineWidth = 10;
+      context.fill();
 
       totalElements++;
 
