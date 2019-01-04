@@ -1,7 +1,10 @@
 const canvasSketch = require('canvas-sketch');
+const { lerp } = require('canvas-sketch-util/math');
+const random = require('canvas-sketch-util/random');
+
 
 const settings = {
-  dimensions: [ 1024, 1024 ], //or 'A4'/[x, y] 
+  dimensions: [ 2048, 2048 ], //or 'A4'/[x, y] 
   //orentation: 'landscape'
   //pixelsPerInch: 300, units: 'cm' 
   //Noitce the , between each paramter
@@ -10,11 +13,14 @@ const settings = {
 
 const sketch = () => {
   
+  //Setting the seed for the random function from sketch utils, (rather than using JS Math.random)
+  //but in this case it's a random number.
+  random.setSeed(Math.random());
 
   //Function declaration
   const createGrid = () => {
     const points = []; //create an array of points
-    const iterations = 5;
+    const iterations = 15;
 
     //2 (xy) dimension loop
     for (let x=0; x < iterations; x++){
@@ -33,11 +39,14 @@ const sketch = () => {
   };
   
   // Call the function that returns an array and store it in points
-  const points = createGrid();
 
+  const points = createGrid().filter(() => random.value() > 0.5);
+  //Using the filter we can drop some out
+  //console.log(() => Math.random() > 0.5);
+  //This outputs a null or a false??
 
   //declare a margin
-  const margin = 1024 / 10;
+  const margin = 400;
   var totalElements = 0;
 
   return ({ context, width, height }) => {
@@ -45,14 +54,19 @@ const sketch = () => {
     context.fillRect(0,0,width,height);
 
     points.forEach(([u,v]) => {
-      const x = u * width;
-      const y = v * height;
+
+      //Using Lerp, put a margin on the element
+      //Lerp gives us a higher for earlier one
+      //and 
+      const x = lerp(margin, width-margin, u)
+      console.log(u + " " + lerp(margin, width-margin, u).toString())
+      const y = lerp(margin, height - margin, v);
 
       //configure and draw the line
       context.beginPath();
-      context.arc(x + margin, y + margin, 40, Math.PI * 2, false);
+      context.arc(x, y, 10, Math.PI * 2, false);
       context.strokeStyle = 'black';
-      context.lineWidth = 10;
+      context.lineWidth = 5;
       context.stroke();
 
       totalElements++;

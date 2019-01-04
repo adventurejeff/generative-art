@@ -5,7 +5,8 @@
   "main": "my-sketch.js",
   "dependencies": {
     "canvas-sketch": "^0.1.1",
-    "canvas-sketch-cli": "^1.1.9"
+    "canvas-sketch-cli": "^1.1.9",
+    "canvas-sketch-util": "^1.6.0"
   },
   "devDependencies": {},
   "scripts": {
