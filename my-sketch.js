@@ -40,7 +40,8 @@ const sketch = () => {
         points.push({
           colour: random.pick(palette),
           position: [u,v], 
-          radius: Math.abs(random.noise2D(u,v)) *20
+          radius: Math.abs(random.noise2D(u,v)) *20, //use noise for the size and rotation
+          rotation: Math.abs(random.noise2D(u,v)) *10
           //radius: Math.abs(0.01 * random.gaussian() * 0.01)
           //radius: random.value() * 10
         });
@@ -71,7 +72,7 @@ const sketch = () => {
 
       //Don't quite get this bit. (deconstructing)
       const { 
-        position, radius, colour
+        position, radius, colour, rotation
       } = data;
       const [ u, v ] = position;
       //Using Lerp, put a margin on the element
@@ -80,14 +81,29 @@ const sketch = () => {
       const x = lerp(margin, width-margin, u)
       const y = lerp(margin, height - margin, v);
 
+      /*
       //configure and draw the line
       context.beginPath();
       context.arc(x, y, radius * 5, Math.PI * 2, false);
       context.fillStyle = colour;
       context.lineWidth = 10;
       context.fill();
+      */
 
+      context.save(); //save the state, so we can restore it again next time.
+      //else we'd be rotating and rotating more and more 
+
+      //configure and draw text
+      context.fillStyle = colour;
+      //context.font = '100px "Arial"';
+      context.font = `${radius * width * .005}px "Helvetica"`;
+      context.translate(x,y)
+      context.rotate(rotation);
+      context.fillText('=', 0, 0);
       totalElements++;
+
+      //restore the saved context values
+      context.restore();
 
     });
     console.log('Total elemetns ' + totalElements.toString())
