@@ -15,7 +15,7 @@ const sketch = () => {
 
   //Pick a random palette from the palettes module.
   //slicing it up from the 5 to a smaller count of colours
-  const colourCount = 3;
+  const colourCount = 4;
   const palette = random.pick(palettes).slice(0,colourCount);
 
 
@@ -26,7 +26,7 @@ const sketch = () => {
   //Function declaration
   const createGrid = () => {
     const points = []; //create an array of points
-    const iterations = 15;
+    const iterations = 25;
 
     //2 (xy) dimension loop
     for (let x=0; x < iterations; x++){
@@ -36,11 +36,13 @@ const sketch = () => {
 
         //add them to the array, scrap that. We'll create a set of variables
         //put the position in, and the radius value randomised.
+        //and a colour from the palette
         points.push({
           colour: random.pick(palette),
           position: [u,v], 
-          radius: random.value() * 10
-
+          radius: Math.abs(random.noise2D(u,v)) *20
+          //radius: Math.abs(0.01 * random.gaussian() * 0.01)
+          //radius: random.value() * 10
         });
       }
 
