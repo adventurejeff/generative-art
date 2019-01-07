@@ -1,12 +1,23 @@
 const canvasSketch = require('canvas-sketch');
+const random = require('canvas-sketch-util/random'); //add the canvas random function
+const palettes = require('nice-color-palettes');
 
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = require('three');
 
-// Include any additional ThreeJS examples below
-//require('three/examples/js/controls/OrbitControls');
+//Pick a random palette from the palettes module.
+  //slicing it up from the 5 to a smaller count of colours
+  const colourCount = 4;
+  const palette = random.pick(palettes).slice(0,colourCount);// Include any additional ThreeJS examples below
+
+  //require('three/examples/js/controls/OrbitControls');
 
 const settings = {
+
+  dimensions: [512,512],
+  fps: 24,
+  duration: 4, //seconds
+  
   // Make the loop animated
   animate: true,
   // Get a WebGL canvas rather than 2D
@@ -32,32 +43,47 @@ const sketch = ({ context }) => {
 
   // Setup your scene
   const scene = new THREE.Scene();
+  
+  //Make the mesh
+  const box = new THREE.BoxGeometry(1,1,1);
 
-for(let i=0; i < 40; i++){
+  //Loop of mesh instances
+for(let i=0; i < 50; i++){
   const mesh = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({
-      color: 'orange',
+    box,
+    new THREE.MeshStandardMaterial({
+      color: random.pick(palette),
     })
   );
-  const variance = 1;
-  mesh.position.set(Math.random()*variance,Math.random()*variance,Math.random()*variance );
+
+  //Setting the position of the instances
+  const variance = .4, scaleVariance = 2;
+  mesh.position.set(
+    random.range(-variance,variance),
+    random.range(-variance,variance),
+    random.range(-variance,variance)
+  );
+  //randomise the dimensions
+  
+  mesh.scale.set(
+    random.range(-scaleVariance,scaleVariance),
+    random.range(-scaleVariance,scaleVariance),
+    random.range(-scaleVariance,scaleVariance)
+  );
+    
+  //scaling them all
   mesh.scale.multiplyScalar(.1);
   scene.add(mesh);
 }
 
- 
-
-  /* DELETED LIGHTING
-  // Specify an ambient/unlit colour
-  scene.add(new THREE.AmbientLight('#59314f'));
-
-  // Add some light
-  const light = new THREE.PointLight('#45caf7', 1, 15.5);
-  light.position.set(2, 2, -4).multiplyScalar(1.5);
+  //LIGHTING
+  light = new THREE.DirectionalLight('white', 1);
+  light.position.set(0,4,0)
   scene.add(light);
 
-  */
+  scene.add(new THREE.AmbientLight('red', 0.5));
+
+ 
 
   // draw each frame
   return {
@@ -90,8 +116,8 @@ for(let i=0; i < 40; i++){
       camera.updateProjectionMatrix();
     },
     // Update & render your scene here
-    render ({ time }) {
-      //mesh.rotation.y = time * (100 * Math.PI / 180);
+    render ({ playhead }) {
+      scene.rotation.y = playhead * Math.PI * 2;// Using Playhead, we are looping 1 whole rotation
       renderer.render(scene, camera);
     },
     // Dispose of events & renderer for cleaner hot-reloading
