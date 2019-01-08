@@ -1,6 +1,8 @@
 const canvasSketch = require('canvas-sketch');
 const random = require('canvas-sketch-util/random'); //add the canvas random function
 const palettes = require('nice-color-palettes');
+const eases = require('eases'); //npm install eases
+
 
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = require('three');
@@ -117,7 +119,9 @@ for(let i=0; i < 50; i++){
     },
     // Update & render your scene here
     render ({ playhead }) {
-      scene.rotation.y = playhead * Math.PI * 2;// Using Playhead, we are looping 1 whole rotation
+      //scene.rotation.y = playhead * Math.PI * 2;
+      const t = Math.sin(playhead * Math.PI * 2) *2;// Using Playhead, we are looping 1 whole rotation
+      scene.rotation.y =  eases.elasticInOut(t); //use an ease function.
       renderer.render(scene, camera);
     },
     // Dispose of events & renderer for cleaner hot-reloading
