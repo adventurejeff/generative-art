@@ -5,7 +5,7 @@ const glsl = require('glslify');
 // Setup our sketch
 const settings = {
   context: 'webgl',
-  animate: true
+  animate: true, dimensions: [ 2048, 2048 ]
 };
 
 // Your glsl code
