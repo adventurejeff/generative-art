@@ -3,6 +3,7 @@ const { lerp } = require('canvas-sketch-util/math');
 const random = require('canvas-sketch-util/random');
 const palettes = require('nice-color-palettes');
 
+
 const settings = {
   dimensions: [ 2048, 2048 ], //or 'A4'/[x, y] 
   //orentation: 'landscape'

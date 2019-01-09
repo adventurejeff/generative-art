@@ -2,7 +2,7 @@ const canvasSketch = require('canvas-sketch');
 const random = require('canvas-sketch-util/random'); //add the canvas random function
 const palettes = require('nice-color-palettes');
 const eases = require('eases'); //npm install eases
-
+const bezierEasing = require('bezier-easing'); //cubic-bezier.com //
 
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = require('three');
@@ -83,7 +83,7 @@ for(let i=0; i < 50; i++){
   light.position.set(0,4,0)
   scene.add(light);
 
-  scene.add(new THREE.AmbientLight('red', 0.5));
+  scene.add(new THREE.AmbientLight('white', 0.5));
 
  
 
@@ -121,7 +121,11 @@ for(let i=0; i < 50; i++){
     render ({ playhead }) {
       //scene.rotation.y = playhead * Math.PI * 2;
       const t = Math.sin(playhead * Math.PI * 2) *2;// Using Playhead, we are looping 1 whole rotation
-      scene.rotation.y =  eases.elasticInOut(t); //use an ease function.
+      //scene.rotation.y =  eases.elasticInOut(t); //use an ease function.
+      const easeFn = bezierEasing(0, 1.07, 1, .17);
+      scene.rotation.y = easeFn(t);
+ 
+
       renderer.render(scene, camera);
     },
     // Dispose of events & renderer for cleaner hot-reloading
